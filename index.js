@@ -41,7 +41,7 @@ async function run() {
             if (existingUser) {
                 return res.send({ message: 'user already exists', insertedId: null });
             }
-            
+
             const result = await userCollection.insertOne({ ...user, createdAt: new Date() });
 
             res.send(result);
@@ -52,6 +52,21 @@ async function run() {
             const email = req.query.email;
             const query = { email: email }
             const result = await userCollection.findOne(query);
+            res.send(result);
+        });
+
+        // API to insert a new task
+        app.post('/tasks', async (req, res) => {
+            const task = req.body;
+            const result = await taskCollection.insertOne(task);
+            res.send(result);
+        });
+
+        // API to get all tasks of a user by email 
+        app.get('/tasks', async (req, res) => {
+            const email = req.query.email;
+            const query = { createdBy: email }
+            const result = await taskCollection.find(query).toArray();
             res.send(result);
         });
 
