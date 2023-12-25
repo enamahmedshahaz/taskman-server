@@ -78,6 +78,32 @@ async function run() {
             res.send(result);
         });
 
+        //API to update  a task info
+        app.patch('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedTask = req.body;
+            const filter = { _id: new ObjectId(id) };
+
+            const updateDoc = {
+                $set: {
+                    title: updatedTask.title,
+                    description: updatedTask.description,
+                    deadline: updatedTask.deadline,
+                    priority: updatedTask.priority,
+                },
+            };
+            const result = await taskCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        });
+
+        //API to get a task based on id 
+        app.get('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await taskCollection.findOne(query);
+            res.send(result);
+        });
+
 
         //API to change a task status
         app.patch('/tasks/changeStatus/:id', async (req, res) => {
@@ -92,7 +118,7 @@ async function run() {
                 },
             };
             const result = await taskCollection.updateOne(filter, updateDoc);
-            
+
             res.send(result);
         });
 
