@@ -70,6 +70,32 @@ async function run() {
             res.send(result);
         });
 
+        //API to delete task based on id 
+        app.delete('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await taskCollection.deleteOne(query);
+            res.send(result);
+        });
+
+
+        //API to change a task status
+        app.patch('/tasks/changeStatus/:id', async (req, res) => {
+            const id = req.params.id;
+            const statusToChange = req.query.status;
+
+            const filter = { _id: new ObjectId(id) };
+
+            const updateDoc = {
+                $set: {
+                    status: statusToChange,
+                },
+            };
+            const result = await taskCollection.updateOne(filter, updateDoc);
+            
+            res.send(result);
+        });
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
